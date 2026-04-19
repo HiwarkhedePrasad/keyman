@@ -31,12 +31,12 @@ type Vault struct {
 
 // EnsureDataDir creates the data directory if it does not exist.
 func EnsureDataDir() error {
-	return os.MkdirAll(DataDir, 0o700)
+	return os.MkdirAll(resolvedDataDir(), 0o700)
 }
 
 // ListVaults returns the names of all vaults on disk (without extension).
 func ListVaults() ([]string, error) {
-	files, err := filepath.Glob(filepath.Join(DataDir, "*"+ext))
+	files, err := filepath.Glob(filepath.Join(resolvedDataDir(), "*"+ext))
 	if err != nil {
 		return nil, err
 	}
@@ -147,5 +147,37 @@ func DeleteVault(name string) error {
 }
 
 func vaultPath(name string) string {
-	return filepath.Join(DataDir, name+ext)
+	return filepath.Join(resolvedDataDir(), name+ext)
+}
+
+func resolvedDataDir() string {
+	if filepath.IsAbs(DataDir) {
+		return DataDir
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		return DataDir
+	}
+
+	if root := projectRootFrom(wd); root != "" {
+		return filepath.Join(root, DataDir)
+	}
+
+	return filepath.Join(wd, DataDir)
+}
+
+func projectRootFrom(start string) string {
+	dir := start
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return ""
+		}
+		dir = parent
+	}
 }

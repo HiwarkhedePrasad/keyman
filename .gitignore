@@ -1,0 +1,27 @@
+# Binaries
+keyman
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go build artifacts
+*.test
+*.out
+coverage.out
+
+# Build/release output
+dist/
+
+# Local vault data (secrets)
+keyman_vaults/
+*.vault
+
+# IDE/editor files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

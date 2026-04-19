@@ -153,7 +153,7 @@ Keyman opens to the vault list. Select a vault with the arrow keys and press `en
 
 Keyman is designed around the principle that your secrets never leave your machine unencrypted.
 
-- **Local only** — vault files live in `keyman_vaults/` in your working directory; nothing is sent anywhere
+- **Local only** — vault files live in `keyman_vaults/` at the project root (detected via `go.mod`); nothing is sent anywhere
 - **File permissions** — vault files are created with `0600` (readable only by you)
 - **Fresh encryption on every save** — each write generates a new random salt and nonce, so saving the same data twice produces a completely different ciphertext
 - **Password never stored** — your master password exists only in process memory for the duration of the session and is never written to disk

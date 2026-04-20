@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	DataDir = "keyman_vaults"
+	DataDir = ".keyman_vaults"
 )
 
 const ext = ".vault"
@@ -155,13 +155,16 @@ func resolvedDataDir() string {
 		return DataDir
 	}
 
+	// Fetch the global user home directory (e.g., ~/.keyman_vaults)
+	homeDir, err := os.UserHomeDir()
+	if err == nil {
+		return filepath.Join(homeDir, DataDir)
+	}
+
+	// Fallback to the current working directory if the home directory is completely inaccessible 
 	wd, err := os.Getwd()
 	if err != nil {
 		return DataDir
-	}
-
-	if root := projectRootFrom(wd); root != "" {
-		return filepath.Join(root, DataDir)
 	}
 
 	return filepath.Join(wd, DataDir)

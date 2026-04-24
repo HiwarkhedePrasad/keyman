@@ -552,11 +552,17 @@ func (m *Model) setStatus(msg string, style lipgloss.Style) {
 }
 
 func isPrintable(s string) bool {
-	if len(s) != 1 {
+	if len(s) == 0 {
 		return false
 	}
-	r := rune(s[0])
-	return unicode.IsPrint(r)
+	// Check if all runes in the string are printable
+	// This allows pasting multi-character text
+	for _, r := range s {
+		if !unicode.IsPrint(r) && r != '\n' && r != '\t' {
+			return false
+		}
+	}
+	return true
 }
 
 // maskValue replaces a value string with bullet characters.
